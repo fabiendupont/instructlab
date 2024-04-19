@@ -11,6 +11,8 @@ COMMON_DEPS = \
 	$(NULL)
 
 CUDA_CONTAINERFILE = $(CURDIR)/containers/cuda/Containerfile
+CUDA_VERSION ?= 12.4.1
+CUDA_BUILD_ARGS = --build-arg CUDA_VERSION=${CUDA_VERSION}
 CUDA_DEPS = \
 	$(CUDA_CONTAINERFILE) \
 	$(COMMON_DEPS) \
@@ -56,7 +58,7 @@ images: ## Get the current controller, set the path, and build the Containerfile
 
 .PHONY: cuda
 cuda: $(CUDA_DEPS)  ## Build container for NVidia CUDA
-	$(CENGINE) build $(BUILD_ARGS) \
+	$(CENGINE) build $(CUDA_BUILD_ARGS) \
 		-t $(CONTAINER_PREFIX):$@ \
 		-f $(CUDA_CONTAINERFILE) \
 		.
@@ -137,6 +139,7 @@ tests: ## Run tox -e unit against code
 	tox -e py3-unit
 
 .PHONY: verify
+<<<<<<< HEAD
 verify: ## Run tox -e fmt,lint,spellcheck against code
 	tox p -e ruff,fastlint,spellcheck
 
@@ -171,3 +174,6 @@ endif
 md-lint: ## Lint markdown files
 	$(ECHO_PREFIX) printf "  %-12s ./...\n" "[MD LINT]"
 	$(CMD_PREFIX) podman run --rm -v $(CURDIR):/workdir --security-opt label=disable docker.io/davidanson/markdownlint-cli2:v0.12.1 > /dev/null
+=======
+verify: ## Run tox -e fmt, lint against code
+	tox p -e fmt,lint
